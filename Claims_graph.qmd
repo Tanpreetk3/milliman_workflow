@@ -1,0 +1,66 @@
+---
+title: "tanpreet_workflow"
+format: html
+editor: visual
+---
+
+## Packages 
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+```
+
+## Data Import 
+```{r}
+claims <- read_csv("claims.csv")
+claims
+```
+
+## Data Cleaning 
+```{r}
+claims_clean <- claims %>%
+ filter(DEPARTMENTID >= 6L & DEPARTMENTID <= 20L)
+  
+claims_clean2 <- claims_clean %>%
+  mutate(Year = year(ymd_hms(CURRENTILLNESSDATE)))
+
+```
+
+## Data Visualization
+```{r}
+ ggplot(claims_clean) +
+ aes(x = DEPARTMENTID) +
+ geom_histogram(bins = 30L, fill = "#112446") +
+ theme_minimal()
+```
+
+```{r}
+claims_summary <- claims_clean2 %>%
+  group_by(Year) %>%
+  summarize(PatientCount = n_distinct(PATIENTID))
+
+ggplot(claims_summary, aes(x = Year, y = PatientCount)) +
+  geom_line() +
+  labs(
+    title = "Number of Patients per Month",
+    x = "Year",
+    y = "Number of Patients"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+## Data Analysis 
+```{r}
+
+```
+
+
+
+
